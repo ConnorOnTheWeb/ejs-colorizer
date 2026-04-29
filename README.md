@@ -2,6 +2,8 @@
 
 Syntax highlighting for [EJS (Embedded JavaScript)](https://ejs.co/) templates in Visual Studio Code.
 
+View on Visual Studio Marketplace [EJS Colorizer](https://marketplace.visualstudio.com/items?itemName=connorontheweb.ejs-colorizer)
+
 ## Features
 
 - Colorizes all EJS tag variants with full theme compatibility
