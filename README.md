@@ -33,7 +33,9 @@ This extension has no configurable settings.
 
 EJS tags inside HTML comments (`<!-- <%= value %> -->`) are not colorized. The HTML grammar applies a flat comment color across the entire comment region, which overrides EJS token colors. This is a limitation of how VS Code layers TextMate grammars and does not affect functionality.
 
-HTML color themes may render content after EJS closing tags (`%>`) in unexpected colors. The HTML grammar can interpret the `>` in `%>` as closing the current HTML tag, causing subsequent content to be colored as an error state. This is a fundamental limitation of TextMate grammar layering and affects all grammar-based EJS extensions. A semantic token provider would resolve this in a future release.
+EJS tags inside HTML comments (`<!-- <%= value %> -->`) are not colorized. The HTML grammar applies a flat comment color across the entire comment region, which overrides EJS token colors. This is a limitation of how VS Code layers TextMate grammars and does not affect functionality.
+
+When a `%>` closing tag is immediately followed by a `>` character with no space (e.g., `<%= val %>>`), the HTML grammar may misparse the sequence and color subsequent content incorrectly. Adding a space before the `>` resolves this. This is a known TextMate grammar layering edge case.
 
 ## Release Notes
 
