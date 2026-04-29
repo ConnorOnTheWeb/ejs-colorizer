@@ -1,0 +1,82 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "EJS",
+	"scopeName": "text.html.ejs",
+	"patterns": [
+		{ "include": "#ejs-comment" },
+		{ "include": "#ejs-output-escaped" },
+		{ "include": "#ejs-output-unescaped" },
+		{ "include": "#ejs-whitespace-slurp" },
+		{ "include": "#ejs-scriptlet" },
+		{ "include": "text.html.basic" }
+	],
+	"repository": {
+		"ejs-comment": {
+			"name": "comment.block.ejs",
+			"begin": "<%#",
+			"end": "(?:-|_)?%>",
+			"beginCaptures": {
+				"0": { "name": "punctuation.section.embedded.begin.ejs" }
+			},
+			"endCaptures": {
+				"0": { "name": "punctuation.section.embedded.end.ejs" }
+			}
+		},
+		"ejs-output-escaped": {
+			"name": "meta.embedded.block.javascript",
+			"begin": "<%=",
+			"end": "(?:-|_)?%>",
+			"beginCaptures": {
+				"0": { "name": "punctuation.section.embedded.begin.ejs" }
+			},
+			"endCaptures": {
+				"0": { "name": "punctuation.section.embedded.end.ejs" }
+			},
+			"patterns": [
+				{ "include": "source.js" }
+			]
+		},
+		"ejs-output-unescaped": {
+			"name": "meta.embedded.block.javascript",
+			"begin": "<%-",
+			"end": "(?:-|_)?%>",
+			"beginCaptures": {
+				"0": { "name": "punctuation.section.embedded.begin.ejs" }
+			},
+			"endCaptures": {
+				"0": { "name": "punctuation.section.embedded.end.ejs" }
+			},
+			"patterns": [
+				{ "include": "source.js" }
+			]
+		},
+		"ejs-whitespace-slurp": {
+			"name": "meta.embedded.block.javascript",
+			"begin": "<%_",
+			"end": "(?:-|_)?%>",
+			"beginCaptures": {
+				"0": { "name": "punctuation.section.embedded.begin.ejs" }
+			},
+			"endCaptures": {
+				"0": { "name": "punctuation.section.embedded.end.ejs" }
+			},
+			"patterns": [
+				{ "include": "source.js" }
+			]
+		},
+		"ejs-scriptlet": {
+			"name": "meta.embedded.block.javascript",
+			"begin": "<%(?![=\\-_#])",
+			"end": "(?:-|_)?%>",
+			"beginCaptures": {
+				"0": { "name": "punctuation.section.embedded.begin.ejs" }
+			},
+			"endCaptures": {
+				"0": { "name": "punctuation.section.embedded.end.ejs" }
+			},
+			"patterns": [
+				{ "include": "source.js" }
+			]
+		}
+	}
+}

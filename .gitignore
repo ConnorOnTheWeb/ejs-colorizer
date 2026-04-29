@@ -1,0 +1,5 @@
+vsc-extension-quickstart.md
+node_modules/
+*.vsix
+.vscode-test/
+.DS_Store
