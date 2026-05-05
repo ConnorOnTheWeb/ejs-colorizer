@@ -2,7 +2,7 @@
   "name": "ejs-colorizer",
   "displayName": "EJS Colorizer",
   "description": "EJS syntax highlighting for Visual Studio Code. Colorizes embedded JavaScript tags, expressions, and comments inside your EJS templates with full theme support.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "connorontheweb",
   "license": "MIT",
   "repository": {
@@ -28,14 +28,21 @@
       "extensions": [".ejs"],
       "configuration": "./language-configuration.json"
     }],
-    "grammars": [{
-      "language": "ejs",
-      "scopeName": "text.html.ejs",
-      "path": "./syntaxes/ejs.tmLanguage.json",
-      "embeddedLanguages": {
-        "source.js": "javascript",
-        "text.html.basic": "html"
+    "grammars": [
+      {
+        "language": "ejs",
+        "scopeName": "text.html.ejs",
+        "path": "./syntaxes/ejs.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.js": "javascript",
+          "text.html.basic": "html"
+        }
+      },
+      {
+        "scopeName": "ejs.injection.html-attribute",
+        "path": "./syntaxes/ejs.injection.html-attribute.tmLanguage.json",
+        "injectTo": ["text.html.ejs"]
       }
-    }]
+    ]
   }
 }

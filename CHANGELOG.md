@@ -2,6 +2,12 @@
 
 All notable changes to the "ejs-colorizer" extension will be documented in this file.
 
+## [1.2.0] - 2026-05-05
+
+### Added
+
+- EJS tags inside HTML attribute values (e.g. `src="<%= url %>"`, `class="<%= cls %>"`) are now correctly highlighted via a TextMate injection grammar targeting `string.quoted.double.html` and `string.quoted.single.html` within `text.html.ejs`
+
 ## [1.1.0] - 2026-05-05
 
 ### Added

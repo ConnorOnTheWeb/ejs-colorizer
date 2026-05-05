@@ -9,6 +9,7 @@ View on Visual Studio Marketplace [EJS Colorizer](https://marketplace.visualstud
 - Colorizes all EJS tag variants with full theme compatibility
 - Delegates JavaScript inside tags to VS Code's built-in JS grammar
 - Delegates HTML outside tags to VS Code's built-in HTML grammar
+- EJS tags inside HTML attribute values are highlighted (e.g. `src="<%= url %>"`, `class="<%= cls %>"`)
 - Works with any color theme
 - Designed for extension composition — other grammars can inject into `text.html.ejs` or `meta.html-content.ejs`
 
@@ -40,11 +41,13 @@ This grammar uses the scope `text.html.ejs` as its root and wraps all HTML conte
 
 EJS tags inside HTML comments (`<!-- <%= value %> -->`) are not colorized. The HTML grammar applies a flat comment color across the entire comment region, which overrides EJS token colors. This is a limitation of how VS Code layers TextMate grammars and does not affect functionality.
 
-EJS tags inside HTML attribute values (e.g. `<img src="<%= url %>">`) are not colorized as EJS — the HTML grammar claims the attribute string context first. This is a structural limitation of TextMate grammar layering.
-
 When a `%>` closing tag is immediately followed by a `>` character with no space (e.g., `<%= val %>>`), the HTML grammar may misparse the sequence and color subsequent content incorrectly. Adding a space before the `>` resolves this. This is a known TextMate grammar layering edge case.
 
 ## Release Notes
+
+### 1.2.0
+
+EJS tags inside HTML attribute values are now correctly highlighted via a TextMate injection grammar.
 
 ### 1.1.0
 
