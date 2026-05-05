@@ -8,7 +8,7 @@
 		{ "include": "#ejs-output-unescaped" },
 		{ "include": "#ejs-whitespace-slurp" },
 		{ "include": "#ejs-scriptlet" },
-		{ "include": "text.html.basic" }
+		{ "include": "#html-content" }
 	],
 	"repository": {
 		"ejs-comment": {
@@ -62,6 +62,12 @@
 			},
 			"patterns": [
 				{ "include": "source.js" }
+			]
+		},
+		"html-content": {
+			"name": "meta.html-content.ejs",
+			"patterns": [
+				{ "include": "text.html.basic" }
 			]
 		},
 		"ejs-scriptlet": {

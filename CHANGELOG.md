@@ -2,6 +2,13 @@
 
 All notable changes to the "ejs-colorizer" extension will be documented in this file.
 
+## [1.1.0] - 2026-05-05
+
+### Added
+
+- HTML content is now wrapped under the scope `meta.html-content.ejs`, giving other extensions a stable injection target for the HTML regions of `.ejs` files
+- Extensions can inject into `.ejs` files using `"injectTo": ["text.html.ejs"]` and target `meta.html-content.ejs` or standard HTML attribute scopes (`entity.other.attribute-name.html`, `string.quoted.double.html`)
+
 ## [1.0.0] - 2026-04-29
 
 ### Added
