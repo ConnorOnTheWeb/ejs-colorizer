@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.2.1] - 2026-05-09
+
+### Fixed
+
+- `tsconfig.json`: switched `moduleResolution` from the deprecated `"node"` to `"bundler"` (the correct setting for esbuild-bundled projects); changed `module` to `"ESNext"` for compatibility; added `forceConsistentCasingInFileNames: true` and explicit `"types": ["node"]` so Node.js globals (`setTimeout`, `clearTimeout`) are always resolved by the language server.
+- `package.json`: removed redundant `activationEvents` entry — VS Code auto-generates activation events from `contributes.languages` declarations.
+
+---
+
 ## [2.2.0] - 2026-05-10
 
 ### Added
