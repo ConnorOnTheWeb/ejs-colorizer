@@ -1,5 +1,21 @@
 # Change Log
 
+## [2.1.0] - 2026-05-09
+
+### Added
+
+- **Include path completions** — file-path autocomplete inside `include()` string arguments, triggered by `'`, `"`, and `/`. Lists `.ejs` and `.html` files relative to the current file's directory; directories re-trigger suggestions so you can navigate subdirectories naturally.
+
+- **Document links** — every `include()` path is now an underlined, Ctrl/Cmd+clickable link that opens the referenced file directly in the editor.
+
+- **Go to Definition (F12)** — pressing F12 (or Ctrl/Cmd+click) while the cursor is on an include path navigates to the first line of the included file. Returns no result (rather than an error) when the file does not exist.
+
+- **Diagnostics: missing include paths** — `include()` calls that reference a file not found on disk are reported as warnings with the path underlined.
+
+- **Diagnostics: JS syntax errors (joined-program)** — replaces the previous per-block checker which produced false positives on normal `if/for` blocks. All scriptlet and output block contents are now joined into a single synthetic JS function (mirroring EJS runtime behaviour) before syntax checking, so split control-flow constructs are correctly accepted.
+
+---
+
 ## [2.0.0] - 2026-05-08
 
 ### Changed — complete architectural rebuild

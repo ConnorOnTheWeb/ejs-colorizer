@@ -18,6 +18,15 @@ v2 replaces that with a full semantic token provider: a stateful HTML scanner ru
 - JavaScript inside EJS blocks — keywords, strings, numbers, comments, operators
 - Works correctly at every nesting level and with EJS inside attribute values
 
+**Include navigation**
+- File-path completions inside `include()` — lists `.ejs`/`.html` files relative to the current file, with directory traversal
+- Clickable document links on every `include()` path (Ctrl/Cmd+click)
+- Go to Definition (F12) jumps to the first line of the included file
+- Warning diagnostic when an `include()` path does not exist on disk
+
+**JS syntax diagnostics**
+- Joins all scriptlet/output block contents into a single synthetic program (matching EJS runtime behaviour) before checking syntax — so split `if/for/while` constructs spanning multiple blocks are accepted correctly
+
 **Folding**
 - Multi-line EJS blocks fold as a unit
 - Matching `if/for/while` open-blocks (`{`) fold to their corresponding `}` close-block
