@@ -13,6 +13,8 @@
  *   - DefinitionProvider                   (F12 on include() paths)
  *   - HoverProvider                        (EJS delimiter documentation)
  *   - DiagnosticCollection                 (JS syntax + missing includes)
+ *   - DocumentSymbolProvider               (Outline panel / breadcrumbs)
+ *   - DocumentFormattingEditProvider       (Prettier integration)
  */
 
 import * as vscode from 'vscode';
@@ -28,6 +30,8 @@ import { ejsDocumentLinkProvider } from './documentLinkProvider';
 import { ejsDefinitionProvider } from './definitionProvider';
 import { ejsHoverProvider } from './hoverProvider';
 import { createDiagnosticProvider } from './diagnosticProvider';
+import { ejsDocumentSymbolProvider } from './documentSymbolProvider';
+import { ejsFormattingProvider } from './formattingProvider';
 
 const EJS_SELECTOR: vscode.DocumentSelector = { language: 'ejs' };
 
@@ -92,8 +96,23 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // ── Diagnostics — joined-program JS syntax + missing include paths ─────────
   createDiagnosticProvider(context);
-}
 
+  // ── Document symbols — Outline panel / breadcrumbs ────────────────────────
+  context.subscriptions.push(
+    vscode.languages.registerDocumentSymbolProvider(
+      EJS_SELECTOR,
+      ejsDocumentSymbolProvider,
+    ),
+  );
+
+  // ── Formatting — Prettier integration ─────────────────────────────────────
+  context.subscriptions.push(
+    vscode.languages.registerDocumentFormattingEditProvider(
+      EJS_SELECTOR,
+      ejsFormattingProvider,
+    ),
+  );
+}
 export function deactivate(): void {
   // Nothing to clean up — subscriptions are disposed automatically
 }

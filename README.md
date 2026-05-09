@@ -18,6 +18,16 @@ v2 replaces that with a full semantic token provider: a stateful HTML scanner ru
 - JavaScript inside EJS blocks — keywords, strings, numbers, comments, operators
 - Works correctly at every nesting level and with EJS inside attribute values
 
+**Outline / Document Symbols**
+- The Outline panel and breadcrumbs show all EJS blocks as navigable symbols: control-flow blocks, `include()` calls, variable declarations, and output expressions
+
+**Emmet abbreviations**
+- Emmet expansion works inside HTML regions of EJS files (`div.container>ul>li*3` → full HTML structure)
+
+**Prettier formatting**
+- Format Document (Shift+Alt+F) uses the Prettier CLI from your project's `node_modules` (or PATH)
+- Respects your `.prettierrc`; use `@prettier/plugin-ejs` for full EJS-aware formatting
+
 **Include navigation**
 - File-path completions inside `include()` — lists `.ejs`/`.html` files relative to the current file, with directory traversal
 - Clickable document links on every `include()` path (Ctrl/Cmd+click)

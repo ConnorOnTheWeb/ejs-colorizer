@@ -15,7 +15,7 @@
  */
 
 import * as vscode from 'vscode';
-import { findIncludes, resolveIncludePath } from './includeResolver';
+import { findIncludes } from './includeResolver';
 
 export const ejsDocumentLinkProvider: vscode.DocumentLinkProvider = {
   provideDocumentLinks(

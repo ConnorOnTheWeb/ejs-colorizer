@@ -156,10 +156,22 @@ function checkJsSyntax(
   const error = trySyntaxCheck(joined);
   if (!error) { return; }
 
-  // Map error line in synthetic program back to document offset
-  const synLine = (error.lineNumber ?? 1) - 1; // V8 line numbers are 1-based
-  const entry = syntheticLines[Math.min(synLine, syntheticLines.length - 1)];
-  const errorDocOffset = entry?.docOffset ?? 0;
+  // V8 (Node.js) does not expose .lineNumber on SyntaxError from new Function().
+  // If it is available (e.g. SpiderMonkey), use it to map into the synthetic
+  // program. Otherwise fall back to highlighting the first EJS block that
+  // contains non-trivial JS content — that is more useful than line 0.
+  let errorDocOffset = 0;
+  if (error.lineNumber !== undefined) {
+    const synLine = error.lineNumber - 1; // 1-based → 0-based
+    const entry = syntheticLines[Math.min(synLine, syntheticLines.length - 1)];
+    errorDocOffset = entry?.docOffset ?? 0;
+  } else {
+    // Fall back to the first fragment that isn't just a brace
+    const firstMeaningful = fragments.find(
+      (f) => f.code.trim().length > 1,
+    );
+    errorDocOffset = firstMeaningful?.docOffset ?? fragments[0]?.docOffset ?? 0;
+  }
 
   const errorPos = document.positionAt(errorDocOffset);
   // Underline the entire line at the error position for visibility

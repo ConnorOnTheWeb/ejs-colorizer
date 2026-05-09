@@ -14,7 +14,6 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { resolveIncludePath } from './includeResolver';
 
 /** Regex to find an in-progress include path the cursor is inside. */

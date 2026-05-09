@@ -1,5 +1,23 @@
 # Change Log
 
+## [2.2.0] - 2026-05-10
+
+### Added
+
+- **Document Symbols / Outline** — the Outline panel and breadcrumb bar now show all EJS blocks as navigable symbols. Control-flow blocks (`if`, `for`, `forEach`, `while`, `switch`) appear as events; `include()` calls appear as file references; variable declarations and output expressions are also shown.
+
+- **Prettier integration** — "Format Document" (Shift+Alt+F) now works for EJS files via the Prettier CLI. The formatter locates Prettier in your project's `node_modules/.bin/` or on PATH, applies your `.prettierrc` config, and uses `@prettier/plugin-ejs` when available for full EJS-aware formatting.
+
+- **Emmet abbreviations** — Emmet expansion (e.g. `div.container>ul>li*3`) now works in EJS files inside HTML regions, matching the behaviour you'd expect in `.html` files.
+
+### Fixed
+
+- `includePathCompletionProvider`: removed unused `path` import.
+- `documentLinkProvider`: removed unused `resolveIncludePath` import.
+- `diagnosticProvider`: when Node.js (V8) cannot provide a precise line number for a `SyntaxError` (V8 does not expose `.lineNumber` on `Function` constructor errors), the diagnostic now falls back to highlighting the first non-trivial EJS block rather than always pointing to document offset 0.
+
+---
+
 ## [2.1.0] - 2026-05-09
 
 ### Added
