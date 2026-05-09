@@ -1,15 +1,16 @@
 {
   "name": "ejs-colorizer",
   "displayName": "EJS Colorizer",
-  "description": "EJS syntax highlighting for Visual Studio Code. Colorizes embedded JavaScript tags, expressions, and comments inside your EJS templates with full theme support.",
-  "version": "1.2.0",
+  "description": "Complete EJS language support for VS Code — semantic token highlighting, folding, completions, and hover docs.",
+  "version": "2.0.0",
   "publisher": "connorontheweb",
   "license": "MIT",
+  "main": "./dist/extension.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/connorontheweb/ejs-colorizer"
   },
-  "keywords": ["ejs", "template", "syntax highlighting", "html", "javascript"],
+  "keywords": ["ejs", "template", "syntax highlighting", "html", "javascript", "semantic tokens"],
   "icon": "images/ejs-colorizer.png",
   "galleryBanner": {
     "color": "#1e1e1e",
@@ -21,13 +22,34 @@
   "categories": [
     "Programming Languages"
   ],
+  "activationEvents": [
+    "onLanguage:ejs"
+  ],
+  "scripts": {
+    "build": "node esbuild.js",
+    "build:prod": "node esbuild.js --production",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build:prod && vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.116.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "vscode-html-languageservice": "^5.3.0"
+  },
   "contributes": {
-    "languages": [{
-      "id": "ejs",
-      "aliases": ["EJS", "ejs"],
-      "extensions": [".ejs"],
-      "configuration": "./language-configuration.json"
-    }],
+    "languages": [
+      {
+        "id": "ejs",
+        "aliases": ["EJS", "ejs"],
+        "extensions": [".ejs"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
     "grammars": [
       {
         "language": "ejs",
@@ -37,12 +59,37 @@
           "source.js": "javascript",
           "text.html.basic": "html"
         }
+      }
+    ],
+    "semanticTokenTypes": [
+      {
+        "id": "ejsDelimiter",
+        "superType": "keyword",
+        "description": "EJS template tag delimiter (<%=, <%, -%>, etc.)"
       },
       {
-        "scopeName": "ejs.injection.html-attribute",
-        "path": "./syntaxes/ejs.injection.html-attribute.tmLanguage.json",
-        "injectTo": ["text.html.ejs"]
+        "id": "htmlTagName",
+        "description": "HTML element tag name"
+      },
+      {
+        "id": "htmlAttributeName",
+        "description": "HTML element attribute name"
       }
-    ]
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "ejs",
+        "scopes": {
+          "ejsDelimiter": ["punctuation.section.embedded"],
+          "htmlTagName": ["entity.name.tag"],
+          "htmlAttributeName": ["entity.other.attribute-name"]
+        }
+      }
+    ],
+    "configurationDefaults": {
+      "[ejs]": {
+        "editor.semanticHighlighting.enabled": true
+      }
+    }
   }
 }
