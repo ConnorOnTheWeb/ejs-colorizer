@@ -92,11 +92,33 @@ export const ejsSemanticTokensProvider: vscode.DocumentSemanticTokensProvider = 
 export const ejsRangeSemanticTokensProvider: vscode.DocumentRangeSemanticTokensProvider = {
   provideDocumentRangeSemanticTokens(
     document: vscode.TextDocument,
-    range: vscode.Range,
+    _range: vscode.Range,
     _token: vscode.CancellationToken,
   ): vscode.SemanticTokens {
+    // The full-document result is already built and cached by
+    // ejsSemanticTokensProvider. Re-use it here so that scrolling a large
+    // file never triggers a redundant full rescan. If the cache misses (e.g.
+    // the range provider fires before the full provider), compute and cache
+    // the result so the full provider's next call is also free.
+    const key = document.uri.toString();
+    const cached = cache.get(key);
+    if (cached && cached.version === document.version) {
+      return cached.tokens;
+    }
+
     const text = document.getText();
-    return buildTokens(text, document, range);
+    const tokens = buildTokens(text, document);
+
+    cache.set(key, { version: document.version, tokens });
+
+    if (cache.size > 50) {
+      const firstKey = cache.keys().next().value;
+      if (firstKey !== undefined) {
+        cache.delete(firstKey);
+      }
+    }
+
+    return tokens;
   },
 };
 
@@ -105,7 +127,6 @@ export const ejsRangeSemanticTokensProvider: vscode.DocumentRangeSemanticTokensP
 function buildTokens(
   text: string,
   document: vscode.TextDocument,
-  rangeFilter?: vscode.Range,
 ): vscode.SemanticTokens {
   const builder = new vscode.SemanticTokensBuilder(LEGEND);
 

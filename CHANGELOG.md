@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.2.2] - 2026-05-15
+
+### Fixed
+
+- `semanticTokenProvider`: the range-based semantic token provider now shares the document version cache with the full provider instead of bypassing it. Previously every scroll event or visible-range update on a large file triggered a full document rescan (HTML classify + JS tokenize) with no caching. Now, if the full provider has already computed and cached the current document version, the range provider returns that result instantly — and vice-versa.
+- `diagnosticProvider`: fixed O(N²) line-offset computation inside `checkJsSyntax`. The previous code re-split and re-reduced `frag.code` from index 0 on every line of every fragment, allocating two new arrays per iteration. Replaced with an incremental `lineOffset` accumulator — O(N) total, no extra allocations.
+
+---
+
 ## [2.2.1] - 2026-05-09
 
 ### Fixed

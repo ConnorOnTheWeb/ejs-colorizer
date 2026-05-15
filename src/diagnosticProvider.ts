@@ -136,12 +136,10 @@ function checkJsSyntax(
 
   for (const frag of fragments) {
     const fragLines = frag.code.split('\n');
+    let lineOffset = 0;
     for (let li = 0; li < fragLines.length; li++) {
-      const lineOffsetInFrag = frag.code
-        .split('\n')
-        .slice(0, li)
-        .reduce((sum, l) => sum + l.length + 1, 0);
-      syntheticLines.push({ docOffset: frag.docOffset + lineOffsetInFrag });
+      syntheticLines.push({ docOffset: frag.docOffset + lineOffset });
+      lineOffset += fragLines[li].length + 1;
     }
     parts.push(frag.code);
     parts.push('\n;\n');
