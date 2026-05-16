@@ -83,6 +83,9 @@ async function updateDiagnostics(
   // ── 2. Include path existence check ───────────────────────────────────────
   await checkIncludes(text, document, diagnostics);
 
+  // ── 3. Broken EJS comment detection ───────────────────────────────────────
+  checkBrokenEjsComments(text, document, diagnostics);
+
   collection.set(document.uri, diagnostics);
 }
 
@@ -240,4 +243,59 @@ async function checkIncludes(
       diagnostics.push(diag);
     }
   }));
+}
+
+// ─── Broken EJS comment detection ────────────────────────────────────────────
+//
+// A <%# %> comment closes at the first %> the EJS parser encounters.  If the
+// intended comment content contains another EJS tag (e.g. <%= value %>), the
+// comment terminates inside that tag and the rest of the line is emitted as
+// raw output.
+//
+// Detection heuristic: after each comment block ends, look at the remaining
+// text on the same line.  If %> appears before any <%, those are orphaned
+// closing delimiters — the comment terminated early.
+//
+// This avoids false positives like `<%# Use the <%= tag syntax %>` where the
+// first %> IS the intended comment closer (no orphaned %> follows it).
+
+function checkBrokenEjsComments(
+  text: string,
+  document: vscode.TextDocument,
+  diagnostics: vscode.Diagnostic[],
+): void {
+  const blocks = scanEjsBlocks(text);
+
+  for (const block of blocks) {
+    if (block.type !== 'comment') { continue; }
+
+    // Find the end of the line on which this block closes
+    const endPos = document.positionAt(block.end);
+    const lineEnd = document.lineAt(endPos.line).range.end;
+    const lineEndOffset = document.offsetAt(lineEnd);
+
+    if (block.end >= lineEndOffset) { continue; } // nothing left on the line
+
+    const afterText = text.slice(block.end, lineEndOffset);
+
+    const closerIdx = afterText.indexOf('%>');
+    const openerIdx = afterText.indexOf('<%');
+
+    // Orphaned %> found before any new <% opener → comment terminated early
+    if (closerIdx < 0 || (openerIdx >= 0 && openerIdx < closerIdx)) { continue; }
+
+    // Highlight from the start of the comment to the orphaned %>
+    const orphanEnd = document.positionAt(block.end + closerIdx + 2);
+    const range = new vscode.Range(document.positionAt(block.start), orphanEnd);
+
+    const diag = new vscode.Diagnostic(
+      range,
+      'EJS comment terminates early: the `%>` inside closes the comment before the intended end. ' +
+        'Lines containing EJS tags cannot be fully commented with `<%# %>`. ' +
+        'Use `<% if (false) { %>` … `<% } %>` instead.',
+      vscode.DiagnosticSeverity.Warning,
+    );
+    diag.source = 'ejs-colorizer';
+    diagnostics.push(diag);
+  }
 }

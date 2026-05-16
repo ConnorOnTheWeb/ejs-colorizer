@@ -41,6 +41,10 @@ v2 replaces that with a full semantic token provider: a stateful HTML scanner ru
 - Multi-line EJS blocks fold as a unit
 - Matching `if/for/while` open-blocks (`{`) fold to their corresponding `}` close-block
 
+**EJS comment toggle**
+- Cmd+/ (Mac) / Ctrl+/ (Windows/Linux) wraps each selected line with `<%# … %>`, or removes the delimiters if all selected lines are already commented
+- A warning diagnostic fires automatically on any `<%# %>` block that contains a nested EJS tag — the inner `%>` would close the comment early; see [Known Limitations](#known-limitations)
+
 **Completions**
 - EJS tag snippets triggered by `<` or `<%`
 - Includes `if`, `if/else`, `for`, `forEach`, and `include` block templates

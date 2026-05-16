@@ -112,6 +112,56 @@ export function activate(context: vscode.ExtensionContext): void {
       ejsFormattingProvider,
     ),
   );
+
+  // ── EJS comment toggle (Cmd+/) ────────────────────────────────────────────
+  // Each selected line is wrapped with <%# … %> (or unwrapped if all lines are
+  // already commented). Operates on full lines; indentation is preserved.
+  // The broken-comment diagnostic will warn if any toggled line contains a
+  // nested EJS tag that would cause the comment to terminate early.
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand(
+      'ejsColorizer.toggleLineComment',
+      (editor: vscode.TextEditor, edit: vscode.TextEditorEdit): void => {
+        const doc = editor.document;
+        const sel = editor.selection;
+        const startLine = sel.start.line;
+        // A selection ending at col 0 visually excludes that line
+        const endLine =
+          !sel.isEmpty && sel.end.character === 0
+            ? sel.end.line - 1
+            : sel.end.line;
+        const lastLine = Math.max(startLine, endLine);
+
+        const lineTexts: string[] = [];
+        for (let i = startLine; i <= lastLine; i++) {
+          lineTexts.push(doc.lineAt(i).text);
+        }
+
+        // Uncomment if every non-empty line is already <%# … %>
+        const allCommented = lineTexts
+          .filter(t => t.trim().length > 0)
+          .every(t => t.trim().startsWith('<%#') && t.trim().endsWith('%>'));
+
+        for (let i = startLine; i <= lastLine; i++) {
+          const line = doc.lineAt(i);
+          const trimmed = line.text.trim();
+          if (!trimmed) { continue; }
+          const indent = line.text.substring(
+            0,
+            line.text.length - line.text.trimStart().length,
+          );
+
+          if (allCommented) {
+            // Strip <%# prefix and %> suffix — content is never modified
+            const inner = trimmed.slice(3, -2).trim();
+            edit.replace(line.range, `${indent}${inner}`);
+          } else {
+            edit.replace(line.range, `${indent}<%# ${trimmed} %>`);
+          }
+        }
+      },
+    ),
+  );
 }
 export function deactivate(): void {
   // Nothing to clean up — subscriptions are disposed automatically

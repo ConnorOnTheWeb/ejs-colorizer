@@ -1,5 +1,15 @@
 # Change Log
 
+## [2.2.3] - 2026-05-16
+
+### Added
+
+- **EJS comment toggle (Cmd+/ / Ctrl+/)** — pressing the standard comment shortcut in an EJS file now wraps each selected line with `<%# … %>` (or removes the delimiters if all selected lines are already commented). Operates on full lines; indentation is preserved and inner content is never modified.
+
+- **Broken comment diagnostic** — a warning squiggle is raised on any `<%# %>` block whose content causes the comment to terminate early. This happens when the commented line contains another EJS tag (e.g. `<%= value %>`) whose `%>` closes the comment before the intended end. The diagnostic message explains the issue and points to the `<% if (false) { %>` workaround.
+
+---
+
 ## [2.2.2] - 2026-05-15
 
 ### Fixed
