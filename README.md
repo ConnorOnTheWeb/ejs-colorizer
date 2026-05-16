@@ -67,3 +67,35 @@ VS Code 1.116.0 or later. No other dependencies — `vscode-html-languageservice
 ## Extension Settings
 
 No configurable settings. Semantic highlighting is automatically enabled for EJS files.
+
+## Known Limitations
+
+**EJS comment tag (`<%# %>`) terminates at the first `%>`**
+
+This extension makes it easy to create EJS comments using the `<%# %>` tag, but be aware of a fundamental EJS parser limitation: the comment closes at the **first** `%>` encountered — there is no escape sequence and no nesting.
+
+This means the following is broken at the EJS level, regardless of what this extension does:
+
+```ejs
+<%# <a href="/<%= section %>">Link</a> %>
+```
+
+EJS sees the `%>` inside `<%= section %>` as the comment closer. Everything after it — `">Link</a> %>` — is emitted as raw text output.
+
+**What to watch out for:**
+
+- Any line you comment with `<%# %>` that contains an output expression (`<%= %>`), unescaped output (`<%- %>`), or any other EJS tag inside it will terminate early
+- The symptom is stray text or partial HTML appearing in the rendered page — not a server error
+- Pure HTML lines with no EJS tags inside are safe to comment this way
+
+**Safe alternative for mixed HTML + EJS lines:**
+
+Wrap the block in a dead-code `if` branch — EJS compiles it but never executes it:
+
+```ejs
+<% if (false) { %>
+  <a href="/<%= section %>">Link</a>
+<% } %>
+```
+
+This is the only EJS-native way to suppress a line that contains EJS tags without triggering parser errors.
