@@ -2,7 +2,7 @@
 
 Complete EJS language support for Visual Studio Code — built on the [Semantic Tokens API](https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide) so every token is colored correctly regardless of how complex the template gets.
 
-[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/connorontheweb.ejs-colorizer?label=VS%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=connorontheweb.ejs-colorizer)
+[![VS Marketplace](https://vsmarketplacebadges.dev/version/connorontheweb.ejs-colorizer.svg)](https://marketplace.visualstudio.com/items?itemName=connorontheweb.ejs-colorizer) [![License](https://img.shields.io/github/license/connorontheweb/ejs-colorizer)](https://github.com/connorontheweb/ejs-colorizer/blob/main/LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 ## Why v2
 

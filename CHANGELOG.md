@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.2.4] - 2026-05-16
+
+### Changed
+
+- README: replaced retired shields.io VS Marketplace badge with `vsmarketplacebadges.dev`; added license and TypeScript badges.
+
+---
+
 ## [2.2.3] - 2026-05-16
 
 ### Added
