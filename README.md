@@ -1,12 +1,14 @@
 # EJS Colorizer
 
-Complete EJS language support for Visual Studio Code — built on the [Semantic Tokens API](https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide) so every token is colored correctly regardless of how complex the template gets.
+Complete EJS language support for Visual Studio Code - built on the [Semantic Tokens API](https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide) so every token is colored correctly regardless of how complex the template gets.
 
 [![VS Marketplace](https://vsmarketplacebadges.dev/version/connorontheweb.ejs-colorizer.svg)](https://marketplace.visualstudio.com/items?itemName=connorontheweb.ejs-colorizer) [![License](https://img.shields.io/github/license/connorontheweb/ejs-colorizer)](https://github.com/connorontheweb/ejs-colorizer/blob/main/LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
+[![Latest Release](https://img.shields.io/github/v/release/connorontheweb/ejs-colorizer?label=download&logo=github)](https://github.com/connorontheweb/ejs-colorizer/releases/latest)
+
 ## Why v2
 
-Previous versions used TextMate grammars. TextMate grammars are stateless regex engines — when EJS tags appear inside HTML elements, the HTML grammar's internal state machine gets corrupted and downstream tokens (closing tags, attribute values, etc.) end up the wrong color. The only real fix is to step outside the TextMate system.
+Previous versions used TextMate grammars. TextMate grammars are stateless regex engines - when EJS tags appear inside HTML elements, the HTML grammar's internal state machine gets corrupted and downstream tokens (closing tags, attribute values, etc.) end up the wrong color. The only real fix is to step outside the TextMate system.
 
 v2 replaces that with a full semantic token provider: a stateful HTML scanner runs over a "placeholder" version of the document (EJS blocks replaced with equal-length spaces so offsets are preserved), then a purpose-built JS lexer handles the content inside each EJS block. Every token is placed at its exact document offset. `</p>` is always the right color.
 
