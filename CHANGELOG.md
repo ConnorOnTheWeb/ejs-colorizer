@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.2.6] - 2026-05-19
+
+### Changed
+
+- bump to keep changelog current
+
 ## [2.2.5] - 2026-05-19
 
 ### Changed
