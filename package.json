@@ -2,7 +2,7 @@
   "name": "ejs-colorizer",
   "displayName": "EJS Colorizer",
   "description": "Complete EJS language support for VS Code — semantic token highlighting, include navigation, folding, completions, hover, and diagnostics.",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "publisher": "connorontheweb",
   "license": "MIT",
   "main": "./dist/extension.js",
@@ -17,7 +17,7 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": "^1.116.0"
+    "vscode": ">=1.60.0"
   },
   "categories": [
     "Programming Languages"
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/vscode": "^1.116.0",
+    "@types/vscode": "^1.60.0",
     "esbuild": "^0.25.0",
     "typescript": "^5.7.0"
   },
