@@ -36,7 +36,7 @@ export interface EjsBlock {
  * Group 2: inner content (non-greedy)
  * Group 3: closing marker (- or _, or empty)
  */
-const EJS_BLOCK_RE = /<%([#=\-_]?)([\s\S]*?)([-_])?%>/g;
+const EJS_BLOCK_RE = /<%(?!%)([#=\-_]?)([\s\S]*?)([-_])?%>/g;
 
 export function scanEjsBlocks(text: string): EjsBlock[] {
   const blocks: EjsBlock[] = [];

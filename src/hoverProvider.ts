@@ -65,6 +65,16 @@ const TAG_DOCS: EjsTagDoc[] = [
   },
 ];
 
+// Docs for literal-escape sequences that are not scanned as blocks
+const LITERAL_OPEN_DOC = {
+  title: '`<%%` — Literal `<%` Output',
+  body: 'Outputs a literal `<%` string into the rendered HTML. Use when you need the characters `<%` in your output (e.g. client-side templates inside a server-side EJS file).',
+};
+const LITERAL_CLOSE_DOC = {
+  title: '`%%>` — Literal `%>` Output',
+  body: 'Outputs a literal `%>` string into the rendered HTML. The counterpart to `<%%`.',
+};
+
 export const ejsHoverProvider: vscode.HoverProvider = {
   provideHover(
     document: vscode.TextDocument,
@@ -107,6 +117,27 @@ export const ejsHoverProvider: vscode.HoverProvider = {
             ),
           );
         }
+      }
+    }
+
+    // Fallback: check for <%%  and  %%>  literal-escape sequences
+    const literalOpenRe = /<%%/g;
+    let m: RegExpExecArray | null;
+    while ((m = literalOpenRe.exec(text)) !== null) {
+      if (offset >= m.index && offset < m.index + 3) {
+        return new vscode.Hover(
+          new vscode.MarkdownString(`**${LITERAL_OPEN_DOC.title}**\n\n${LITERAL_OPEN_DOC.body}`),
+          new vscode.Range(document.positionAt(m.index), document.positionAt(m.index + 3)),
+        );
+      }
+    }
+    const literalCloseRe = /%%>/g;
+    while ((m = literalCloseRe.exec(text)) !== null) {
+      if (offset >= m.index && offset < m.index + 3) {
+        return new vscode.Hover(
+          new vscode.MarkdownString(`**${LITERAL_CLOSE_DOC.title}**\n\n${LITERAL_CLOSE_DOC.body}`),
+          new vscode.Range(document.positionAt(m.index), document.positionAt(m.index + 3)),
+        );
       }
     }
 

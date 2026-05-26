@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.2.7] - 2026-05-27
+
+### Added
+
+- **EJS v6 compatibility** — verified fully compatible; tag syntax is unchanged in EJS v6.
+- **`<%%` / `%%>` literal-escape support** — scanner now correctly skips `<%%` escape sequences instead of mis-tokenizing them as scriptlets. `<%%` completion snippet and hover documentation added for both `<%%` (outputs `<%`) and `%%>` (outputs `%>`).
+- **EJS v6 compatibility section in README** — documents the v6 prototype-pollution security hardening and the new `unsafePrototypeLocals` render option.
+- **Tag Reference updated** — added `<%%` and `%%>` rows to the tag table.
+
 ## [2.2.6] - 2026-05-19
 
 ### Changed

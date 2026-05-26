@@ -68,6 +68,13 @@ const EJS_SNIPPETS: EjsSnippet[] = [
     sortText: '0e',
   },
   {
+    label: '<%%',
+    insertText: '<%%',
+    detail: 'EJS literal <%',
+    documentation: 'Outputs a literal `<%` string — useful when you need `<%` in your rendered HTML (e.g. a client-side template inside a server-side EJS file).',
+    sortText: '0f',
+  },
+  {
     label: '<% if %>',
     insertText: '<% if (${1:condition}) { %>\n\t${2}\n<% } %>',
     detail: 'EJS if block',
