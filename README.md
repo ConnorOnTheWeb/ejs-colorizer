@@ -70,7 +70,7 @@ v2 replaces that with a full semantic token provider: a stateful HTML scanner ru
 
 ## EJS Version Compatibility
 
-Compatible with **EJS v5 and v6**. EJS v6.0 introduced no template syntax changes — all tags work identically.
+Compatible with **EJS v5 and v6**. EJS v6.0 introduced no template syntax changes - all tags work identically.
 
 One runtime behavior to be aware of when upgrading to EJS v6: locals are now **shallow-copied** into a null-prototype object before template execution as a security hardening measure (prototype-pollution protection). This means inherited properties from class instances or `Object.create()` results are no longer accessible at the top level inside `with`. If your templates use inherited properties from class instances passed as locals, add `{ unsafePrototypeLocals: true }` to your EJS render options to restore the previous behavior.
 
