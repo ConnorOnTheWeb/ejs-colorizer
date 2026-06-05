@@ -9,6 +9,7 @@
 		{ "include": "#ejs-whitespace-slurp" },
 		{ "include": "#ejs-scriptlet" },
 		{ "include": "#style-block" },
+		{ "include": "#script-block" },
 		{ "include": "#html-content" }
 	],
 	"repository": {
@@ -32,10 +33,7 @@
 			},
 			"endCaptures": {
 				"0": { "name": "punctuation.section.embedded.end.ejs" }
-			},
-			"patterns": [
-				{ "include": "source.js" }
-			]
+			}
 		},
 		"ejs-output-unescaped": {
 			"name": "meta.embedded.block.javascript",
@@ -46,10 +44,7 @@
 			},
 			"endCaptures": {
 				"0": { "name": "punctuation.section.embedded.end.ejs" }
-			},
-			"patterns": [
-				{ "include": "source.js" }
-			]
+			}
 		},
 		"ejs-whitespace-slurp": {
 			"name": "meta.embedded.block.javascript",
@@ -60,10 +55,7 @@
 			},
 			"endCaptures": {
 				"0": { "name": "punctuation.section.embedded.end.ejs" }
-			},
-			"patterns": [
-				{ "include": "source.js" }
-			]
+			}
 		},
 		"html-content": {
 			"name": "meta.html-content.ejs",
@@ -71,13 +63,13 @@
 				{ "include": "text.html.basic" }
 			]
 		},
-		"style-block": {
-			"begin": "(?i)(<)(style)((?:\\s+[^>]*)?)(>)",
-			"end": "(?i)(<\\/)(style)(>)",
+		"script-block": {
+			"begin": "(?i)(<)(script)(?=\\s|/?>)",
+			"end": "(?i)(<\\/)(script)(\\s*>)",
+			"name": "meta.embedded.block.html",
 			"beginCaptures": {
 				"1": { "name": "punctuation.definition.tag.html" },
-				"2": { "name": "entity.name.tag.html" },
-				"4": { "name": "punctuation.definition.tag.html" }
+				"2": { "name": "entity.name.tag.html" }
 			},
 			"endCaptures": {
 				"1": { "name": "punctuation.definition.tag.html" },
@@ -85,12 +77,62 @@
 				"3": { "name": "punctuation.definition.tag.html" }
 			},
 			"patterns": [
-				{ "include": "#ejs-comment" },
-				{ "include": "#ejs-output-escaped" },
-				{ "include": "#ejs-output-unescaped" },
-				{ "include": "#ejs-whitespace-slurp" },
-				{ "include": "#ejs-scriptlet" },
-				{ "include": "source.css" }
+				{
+					"begin": "\\G",
+					"end": "(>)",
+					"endCaptures": {
+						"1": { "name": "punctuation.definition.tag.html" }
+					}
+				},
+				{
+					"begin": "(?!\\G)",
+					"end": "(?=(?i)<\\/script)",
+					"name": "source.js",
+					"patterns": [
+						{ "include": "#ejs-comment" },
+						{ "include": "#ejs-output-escaped" },
+						{ "include": "#ejs-output-unescaped" },
+						{ "include": "#ejs-whitespace-slurp" },
+						{ "include": "#ejs-scriptlet" },
+						{ "include": "source.js" }
+					]
+				}
+			]
+		},
+		"style-block": {
+			"begin": "(?i)(<)(style)(?=\\s|/?>)",
+			"end": "(?i)(<\\/)(style)(\\s*>)",
+			"name": "meta.embedded.block.html",
+			"beginCaptures": {
+				"1": { "name": "punctuation.definition.tag.html" },
+				"2": { "name": "entity.name.tag.html" }
+			},
+			"endCaptures": {
+				"1": { "name": "punctuation.definition.tag.html" },
+				"2": { "name": "entity.name.tag.html" },
+				"3": { "name": "punctuation.definition.tag.html" }
+			},
+			"patterns": [
+				{
+					"begin": "\\G",
+					"end": "(>)",
+					"endCaptures": {
+						"1": { "name": "punctuation.definition.tag.html" }
+					}
+				},
+				{
+					"begin": "(?!\\G)",
+					"end": "(?=(?i)<\\/style)",
+					"name": "source.css",
+					"patterns": [
+						{ "include": "#ejs-comment" },
+						{ "include": "#ejs-output-escaped" },
+						{ "include": "#ejs-output-unescaped" },
+						{ "include": "#ejs-whitespace-slurp" },
+						{ "include": "#ejs-scriptlet" },
+						{ "include": "source.css" }
+					]
+				}
 			]
 		},
 		"ejs-scriptlet": {
@@ -102,10 +144,7 @@
 			},
 			"endCaptures": {
 				"0": { "name": "punctuation.section.embedded.end.ejs" }
-			},
-			"patterns": [
-				{ "include": "source.js" }
-			]
+			}
 		}
 	}
 }

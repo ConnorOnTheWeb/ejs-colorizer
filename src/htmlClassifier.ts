@@ -112,81 +112,36 @@ export function classifyHtml(
 
   let tokenType: number = scanner.scan() as number;
 
-  // When the HTML scanner enters a <style> or <script> block it should emit
-  // TokenType.Styles / TokenType.Script for the block content, which falls to
-  // `default: break` and produces no semantic tokens — leaving TextMate to
-  // handle CSS/JS coloring. However, if EJS placeholder spaces corrupt the
-  // scanner's state machine it can instead emit AttributeName / AttributeValue
-  // tokens for CSS property-value pairs. Those would get emitted as
-  // `htmlAttributeName` / `string` semantic tokens and override the correct
-  // TextMate CSS coloring (visible as a brief flash of correct colors before
-  // the semantic token pass settles). Tracking when we're inside a
-  // style/script block and suppressing all emission there prevents this.
-  let insideEmbeddedBlock = false;
-  let lastOpenTagName = '';
-
   while (tokenType !== TokenType.EOS) {
     const offset = scanner.getTokenOffset();
     const length = scanner.getTokenLength();
     const tokenEnd = offset + length;
 
     switch (tokenType) {
-      // ── Start tag names ────────────────────────────────────────────────────
-      case TokenType.StartTag: {
-        lastOpenTagName = placeholderText.slice(offset, offset + length).toLowerCase();
-        if (!insideEmbeddedBlock) {
-          emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
-        }
-        break;
-      }
-
-      // ── > or /> closing the opening tag ────────────────────────────────────
-      case TokenType.StartTagClose:
-      case TokenType.StartTagSelfClose: {
-        if (lastOpenTagName === 'style' || lastOpenTagName === 'script') {
-          insideEmbeddedBlock = true;
-        }
-        lastOpenTagName = '';
-        break;
-      }
-
-      // ── End tag names ──────────────────────────────────────────────────────
+      // ── Start and end tag names ────────────────────────────────────────────
+      case TokenType.StartTag:
       case TokenType.EndTag: {
-        const tagName = placeholderText.slice(offset, offset + length).toLowerCase();
-        if (tagName === 'style' || tagName === 'script') {
-          insideEmbeddedBlock = false;
-        }
-        // Emit only when we are (now) outside an embedded block — this covers
-        // </style> itself (just reset above) as well as all other end tags.
-        if (!insideEmbeddedBlock) {
-          emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
-        }
+        emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
         break;
       }
 
       // ── Attribute names ────────────────────────────────────────────────────
       case TokenType.AttributeName: {
-        if (!insideEmbeddedBlock) {
-          emitSplit(offset, tokenEnd, TN_HTML_ATTR, blocks, placeholderText, tokens);
-        }
+        emitSplit(offset, tokenEnd, TN_HTML_ATTR, blocks, placeholderText, tokens);
         break;
       }
 
       // ── Attribute values (includes surrounding quotes) ─────────────────────
       case TokenType.AttributeValue: {
-        if (!insideEmbeddedBlock) {
-          emitSplit(offset, tokenEnd, TN_STRING, blocks, placeholderText, tokens);
-        }
+        emitSplit(offset, tokenEnd, TN_STRING, blocks, placeholderText, tokens);
         break;
       }
 
-      // ── HTML comments: emit entire <!--...comment...-->'s inner text ────────
+      // ── HTML comments ──────────────────────────────────────────────────────
       case TokenType.StartCommentTag: // <!--
       case TokenType.Comment:         // comment text
       case TokenType.EndCommentTag: { // -->
-        if (!insideEmbeddedBlock) {
-          emitSplit(offset, tokenEnd, TN_COMMENT, blocks, placeholderText, tokens);
-        }
+        emitSplit(offset, tokenEnd, TN_COMMENT, blocks, placeholderText, tokens);
         break;
       }
 
@@ -194,14 +149,14 @@ export function classifyHtml(
       case TokenType.StartDoctypeTag: // <!DOCTYPE
       case TokenType.Doctype:         // doctype value
       case TokenType.EndDoctypeTag: { // >
-        if (!insideEmbeddedBlock) {
-          emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
-        }
+        emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
         break;
       }
 
-      // Content, whitespace, delimiters, script/style content — not emitted
-      // (left to TextMate grammar fallback or default theme color)
+      // Content, whitespace, delimiters, Styles (20), Script (19) — not emitted.
+      // The TM grammar's #style-block / #script-block rules assign source.css /
+      // source.js contentName to those regions so the theme colors them correctly
+      // without any semantic-token interference from this provider.
       default:
         break;
     }

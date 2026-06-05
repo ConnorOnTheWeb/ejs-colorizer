@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.3.1] - 2026-06-05
+
+### Fixed
+
+- **CSS in `<style>` blocks now correctly colorized regardless of file position.** Root cause: EJS rules (`#ejs-scriptlet`, `#ejs-output-escaped`, `#ejs-output-unescaped`, `#ejs-whitespace-slurp`) included `source.js` as a sub-grammar. The common pattern `<% if (condition) { %>` opens a `meta.block.js` scope inside the EJS rule; vscode-textmate then evaluates only the innermost scope's end pattern, so the EJS rule's `%>` end never fires while inside the JS block. The EJS rule stayed open for the rest of the file, consuming all subsequent `<script>` and `<style>` tags as JavaScript. Fix: removed `source.js` from all four EJS rules — JS highlighting inside `<% %>` is fully provided by the semantic token provider.
+- **`<style>` blocks now use the same two-inner-rule embedding approach as VS Code's built-in HTML grammar.** The outer `begin` matches `<style` without consuming `>`, an inner rule handles the `>`, and a second inner rule assigns `name: "source.css"` to the content region ending at `(?=</style)`. This correctly activates CSS syntax coloring.
+- **`#script-block` added** to intercept `<script>` before `text.html.basic` does, using the same two-inner-rule pattern. This prevents the built-in JS grammar from leaving an unclosed scope at `</script>` and ensures `</script>` receives correct HTML punctuation colors.
+
 ## [2.3.0] - 2026-06-05
 
 ### Fixed
