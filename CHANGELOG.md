@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.3.0] - 2026-06-05
+
+### Fixed
+
+- **CSS in `<style>` blocks now colors correctly (root fix).** The `embeddedLanguages` entry (2.2.8) and explicit `style-block` TextMate rule (2.2.9) were both necessary groundwork but neither addressed the actual cause. The real problem was in `htmlClassifier.ts`: the `vscode-html-languageservice` HTML scanner can return `AttributeName` / `AttributeValue` tokens for CSS property-value pairs when EJS placeholder spaces corrupt the scanner's internal state machine. Those tokens were being emitted as `htmlAttributeName` / `string` semantic tokens, which overrode the TextMate CSS coloring — visible as a brief flash of correct colors followed by wrong colors. The fix adds `insideEmbeddedBlock` tracking to `classifyHtml`: when a `<style>` or `<script>` opening tag is seen, all semantic token emission is suppressed until the matching closing tag, regardless of what the scanner reports. `<style>` and `</style>` tag names themselves are still emitted normally.
+
 ## [2.2.9] - 2026-06-05
 
 ### Fixed

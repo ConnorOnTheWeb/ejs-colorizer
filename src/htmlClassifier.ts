@@ -112,28 +112,71 @@ export function classifyHtml(
 
   let tokenType: number = scanner.scan() as number;
 
+  // When the HTML scanner enters a <style> or <script> block it should emit
+  // TokenType.Styles / TokenType.Script for the block content, which falls to
+  // `default: break` and produces no semantic tokens — leaving TextMate to
+  // handle CSS/JS coloring. However, if EJS placeholder spaces corrupt the
+  // scanner's state machine it can instead emit AttributeName / AttributeValue
+  // tokens for CSS property-value pairs. Those would get emitted as
+  // `htmlAttributeName` / `string` semantic tokens and override the correct
+  // TextMate CSS coloring (visible as a brief flash of correct colors before
+  // the semantic token pass settles). Tracking when we're inside a
+  // style/script block and suppressing all emission there prevents this.
+  let insideEmbeddedBlock = false;
+  let lastOpenTagName = '';
+
   while (tokenType !== TokenType.EOS) {
     const offset = scanner.getTokenOffset();
     const length = scanner.getTokenLength();
     const tokenEnd = offset + length;
 
     switch (tokenType) {
-      // ── Tag names ──────────────────────────────────────────────────────────
-      case TokenType.StartTag:
+      // ── Start tag names ────────────────────────────────────────────────────
+      case TokenType.StartTag: {
+        lastOpenTagName = placeholderText.slice(offset, offset + length).toLowerCase();
+        if (!insideEmbeddedBlock) {
+          emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
+        }
+        break;
+      }
+
+      // ── > or /> closing the opening tag ────────────────────────────────────
+      case TokenType.StartTagClose:
+      case TokenType.StartTagSelfClose: {
+        if (lastOpenTagName === 'style' || lastOpenTagName === 'script') {
+          insideEmbeddedBlock = true;
+        }
+        lastOpenTagName = '';
+        break;
+      }
+
+      // ── End tag names ──────────────────────────────────────────────────────
       case TokenType.EndTag: {
-        emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
+        const tagName = placeholderText.slice(offset, offset + length).toLowerCase();
+        if (tagName === 'style' || tagName === 'script') {
+          insideEmbeddedBlock = false;
+        }
+        // Emit only when we are (now) outside an embedded block — this covers
+        // </style> itself (just reset above) as well as all other end tags.
+        if (!insideEmbeddedBlock) {
+          emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
+        }
         break;
       }
 
       // ── Attribute names ────────────────────────────────────────────────────
       case TokenType.AttributeName: {
-        emitSplit(offset, tokenEnd, TN_HTML_ATTR, blocks, placeholderText, tokens);
+        if (!insideEmbeddedBlock) {
+          emitSplit(offset, tokenEnd, TN_HTML_ATTR, blocks, placeholderText, tokens);
+        }
         break;
       }
 
       // ── Attribute values (includes surrounding quotes) ─────────────────────
       case TokenType.AttributeValue: {
-        emitSplit(offset, tokenEnd, TN_STRING, blocks, placeholderText, tokens);
+        if (!insideEmbeddedBlock) {
+          emitSplit(offset, tokenEnd, TN_STRING, blocks, placeholderText, tokens);
+        }
         break;
       }
 
@@ -141,7 +184,9 @@ export function classifyHtml(
       case TokenType.StartCommentTag: // <!--
       case TokenType.Comment:         // comment text
       case TokenType.EndCommentTag: { // -->
-        emitSplit(offset, tokenEnd, TN_COMMENT, blocks, placeholderText, tokens);
+        if (!insideEmbeddedBlock) {
+          emitSplit(offset, tokenEnd, TN_COMMENT, blocks, placeholderText, tokens);
+        }
         break;
       }
 
@@ -149,7 +194,9 @@ export function classifyHtml(
       case TokenType.StartDoctypeTag: // <!DOCTYPE
       case TokenType.Doctype:         // doctype value
       case TokenType.EndDoctypeTag: { // >
-        emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
+        if (!insideEmbeddedBlock) {
+          emitSplit(offset, tokenEnd, TN_HTML_TAG, blocks, placeholderText, tokens);
+        }
         break;
       }
 
