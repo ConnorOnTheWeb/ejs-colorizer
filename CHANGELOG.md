@@ -1,10 +1,16 @@
 # Change Log
 
+## [2.2.9] - 2026-06-05
+
+### Fixed
+
+- **CSS syntax highlighting in `<style>` blocks (complete fix).** The previous `embeddedLanguages` entry added in 2.2.8 enabled CSS language features (completions, hover) but did not fix syntax colorization. The root cause was that VS Code does not reliably propagate an embedded grammar's nested language contexts when that grammar is included from another grammar rather than used as the root. Added an explicit `style-block` rule directly to the EJS TextMate grammar — the same pattern used to handle JS inside `<% %>` blocks. The rule captures `<style>...</style>` with its EJS tag variants still active inside (so `<% %>` inside a `<style>` block continues to work) and delegates the CSS content to `source.css`.
+
 ## [2.2.8] - 2026-06-05
 
 ### Fixed
 
-- **CSS syntax highlighting in `<style>` blocks.** CSS inside `<style>` tags in `.ejs` files was not colorized. The TextMate grammar already embeds the full HTML grammar (`text.html.basic`), which in turn embeds `source.css` for style block content — but the `embeddedLanguages` map in `package.json` was missing the `"source.css": "css"` entry that tells VS Code to apply the CSS tokenizer to those regions. Adding it restores full CSS colorization, completions, and hover inside `<style>` blocks.
+- Added `"source.css": "css"` to the `embeddedLanguages` map in `package.json` (partial fix — enabled CSS language features but not colorization; completed in 2.2.9).
 
 ## [2.2.7] - 2026-05-27
 

@@ -8,6 +8,7 @@
 		{ "include": "#ejs-output-unescaped" },
 		{ "include": "#ejs-whitespace-slurp" },
 		{ "include": "#ejs-scriptlet" },
+		{ "include": "#style-block" },
 		{ "include": "#html-content" }
 	],
 	"repository": {
@@ -68,6 +69,28 @@
 			"name": "meta.html-content.ejs",
 			"patterns": [
 				{ "include": "text.html.basic" }
+			]
+		},
+		"style-block": {
+			"begin": "(?i)(<)(style)((?:\\s+[^>]*)?)(>)",
+			"end": "(?i)(<\\/)(style)(>)",
+			"beginCaptures": {
+				"1": { "name": "punctuation.definition.tag.html" },
+				"2": { "name": "entity.name.tag.html" },
+				"4": { "name": "punctuation.definition.tag.html" }
+			},
+			"endCaptures": {
+				"1": { "name": "punctuation.definition.tag.html" },
+				"2": { "name": "entity.name.tag.html" },
+				"3": { "name": "punctuation.definition.tag.html" }
+			},
+			"patterns": [
+				{ "include": "#ejs-comment" },
+				{ "include": "#ejs-output-escaped" },
+				{ "include": "#ejs-output-unescaped" },
+				{ "include": "#ejs-whitespace-slurp" },
+				{ "include": "#ejs-scriptlet" },
+				{ "include": "source.css" }
 			]
 		},
 		"ejs-scriptlet": {
