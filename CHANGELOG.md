@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.2.8] - 2026-06-05
+
+### Fixed
+
+- **CSS syntax highlighting in `<style>` blocks.** CSS inside `<style>` tags in `.ejs` files was not colorized. The TextMate grammar already embeds the full HTML grammar (`text.html.basic`), which in turn embeds `source.css` for style block content — but the `embeddedLanguages` map in `package.json` was missing the `"source.css": "css"` entry that tells VS Code to apply the CSS tokenizer to those regions. Adding it restores full CSS colorization, completions, and hover inside `<style>` blocks.
+
 ## [2.2.7] - 2026-05-27
 
 ### Added

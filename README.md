@@ -18,6 +18,7 @@ v2 replaces that with a full semantic token provider: a stateful HTML scanner ru
 - All EJS tag types: `<%`, `<%=`, `<%-`, `<%#`, `<%_`, `-%>`, `_%>`
 - HTML — tag names, attribute names, attribute values, comments, DOCTYPE
 - JavaScript inside EJS blocks — keywords, strings, numbers, comments, operators
+- CSS inside `<style>` blocks — full CSS colorization, completions, and hover
 - Works correctly at every nesting level and with EJS inside attribute values
 
 **Outline / Document Symbols**
